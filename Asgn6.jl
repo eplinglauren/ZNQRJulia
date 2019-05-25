@@ -68,12 +68,23 @@ function serialize(v::Value)
 	end
 end
 
-# prim-add takes two values and adds them
+# prim_add takes two values and adds them
+# it throws an error if user is not adding numbers
 function prim_add(a::NumV, b::NumV)
 	if typeof(a)==NumV && typeof(b)==NumV
 		return getfield(a, :n) + getfield(b, :n)
 	else
 		warn("ZNQR: must add numbers only")
+	end
+end
+
+# prim_sub takes two values and subtracts b from a
+# it throws an error if user is not subtracting numbers
+function prim_sub(a::NumV, b::NumV)
+	if typeof(a)==NumV && typeof(b)==NumV
+		return getfield(a, :n) - getfield(b, :n)
+	else
+		warn("ZNQR: must subtract numbers only")
 	end
 end
 
@@ -90,4 +101,10 @@ end
 	@test prim_add(NumV(2), NumV(1)) == 3
 	@test prim_add(NumV(10), NumV(20)) == 30
 	@test_throws ErrorException prim_add(BoolV(true), NumV(2))
+end
+
+@testset "prim_sub" begin
+	@test prim_sub(NumV(10), NumV(2)) == 8
+	@test prim_sub(NumV(1), NumV(2)) == -1
+	@test_throws MethodError prim_sub(BoolV(false),NumV(10))
 end
