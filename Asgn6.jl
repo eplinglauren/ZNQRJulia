@@ -28,25 +28,25 @@ struct StringV <: Value
 	str::String
 end
 struct BoolV <: Value
-	b::Boolean
+	b::Bool
 end
 struct PrimV <: Value
 	op::Symbol
 end
 struct CloV <: Value
-	arg::{Symbol,1}
+	arg::Array{Symbol,1}
 	body::ExprC
 	# env::Env
 end
 
 # environment type
 # abstract type Env <: Dict{Symbol,Value} end
-topEnv = Dict((Symbol(+), PrimV(+))
-	(Symbol(-), PrimV(Symbol(-)))
-	(Symbol(*), PrimV(Symbol(*)))
-	(Symbol(/), PrimV(Symbol(/)))
-	(Symbol(<=), PrimV(Symbol(<=)))
-	(Symbol(equal?), PrimV(Symbol(equal?)))
-	(Symbol(if), PrimV(Symbol(if)))
-	(Symbol(true), PrimV(Symbol(true)))
-	(Symbol(false), PrimV(Symbol(false))))
+topEnv = Dict((Symbol(+)=>PrimV(Symbol(+))),
+(Symbol(-)=>PrimV(Symbol(-))),
+(Symbol(*)=>PrimV(Symbol(*))),
+(Symbol(/)=>PrimV(Symbol(/))),
+(Symbol(<=)=>PrimV(Symbol(<=))),
+(Symbol("equal?")=>PrimV(Symbol("equal?"))),
+(Symbol("if")=>PrimV(Symbol("if"))),
+(Symbol(true)=>BoolV(true)),
+(Symbol(false)=>BoolV(false)))
