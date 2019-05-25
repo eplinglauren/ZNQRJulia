@@ -68,6 +68,15 @@ function serialize(v::Value)
 	end
 end
 
+# prim-add takes two values and adds them
+function prim_add(a::NumV, b::NumV)
+	if typeof(a)==NumV && typeof(b)==NumV
+		return getfield(a, :n) + getfield(b, :n)
+	else
+		warn("ZNQR: must add numbers only")
+	end
+end
+
 # Test Cases
 using Test
 @testset "serialize" begin
@@ -75,4 +84,10 @@ using Test
 	@test serialize(StringV("hi")) == "hi"
 	@test serialize(BoolV(true)) == "true"
 	@test serialize(PrimV(Symbol(+))) == "#<primop>"
+end
+
+@testset "prim_add" begin
+	@test prim_add(NumV(2), NumV(1)) == 3
+	@test prim_add(NumV(10), NumV(20)) == 30
+	@test_throws ErrorException prim_add(BoolV(true), NumV(2))
 end
