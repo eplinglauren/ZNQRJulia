@@ -88,6 +88,29 @@ function prim_sub(a::NumV, b::NumV)
 	end
 end
 
+# prim_mult takes two values and multiplies them
+# it throws an error if the values are not numbers
+function prim_mult(a::NumV, b::NumV)
+	if typeof(a)==NumV && typeof(b)==NumV
+		return getfield(a, :n) * getfield(b, :n)
+	else
+		warn("ZNQR: must multiply numbers only")
+	end
+end
+
+# prim_div takes two values and divides them
+# it throws an error if the values are not numbers,
+# or if the user is trying to divide by zero
+function prim_div(a::NumV, b::NumV)
+	if typeof(a)==NumV && typeof(b)==NumV
+		if getfield(b, :n) != 0
+			return getfield(a, :n) / getfield(b, :n)
+		else
+			warn("ZNQR: divide numbers only, and not by zero")
+		end
+	end
+end
+
 # Test Cases
 using Test
 @testset "serialize" begin
@@ -107,4 +130,15 @@ end
 	@test prim_sub(NumV(10), NumV(2)) == 8
 	@test prim_sub(NumV(1), NumV(2)) == -1
 	@test_throws MethodError prim_sub(BoolV(false),NumV(10))
+end
+
+@testset "prim_mult" begin
+	@test prim_mult(NumV(10), NumV(2)) == 20
+	@test_throws MethodError prim_mult(BoolV(true), NumV(2))
+end
+
+@testset "prim_div" begin
+	@test prim_div(NumV(10), NumV(2)) == 5
+	@test_throws UndefVarError prim_div(NumV(10), NumV(0))
+	@test_throws MethodError prim_div(BoolV(true), NumV(3))
 end
