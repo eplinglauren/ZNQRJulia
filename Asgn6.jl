@@ -18,6 +18,8 @@ struct LamC <: ExprC
 	body::ExprC
 end
 
+# environment type
+# abstract type Env <: Dict{Symbol,Value} end
 
 # type definitions for Values
 abstract type Value end
@@ -39,8 +41,7 @@ struct CloV <: Value
 	# env::Env
 end
 
-# environment type
-# abstract type Env <: Dict{Symbol,Value} end
+# top environment
 topEnv = Dict((Symbol(+)=>PrimV(Symbol(+))),
 (Symbol(-)=>PrimV(Symbol(-))),
 (Symbol(*)=>PrimV(Symbol(*))),
@@ -50,3 +51,17 @@ topEnv = Dict((Symbol(+)=>PrimV(Symbol(+))),
 (Symbol("if")=>PrimV(Symbol("if"))),
 (Symbol(true)=>BoolV(true)),
 (Symbol(false)=>BoolV(false)))
+
+function serialize(v::Value)
+	if typeof(v)==NumV
+		return string(v)
+	elseif typeof(v)==StringV
+		return v
+	elseif typeof(v)==BoolV
+		return string(v)
+	elseif typeof(v)==PrimV
+		return "#<primop>"
+	else
+		return "#<procedure>"
+	end
+end
