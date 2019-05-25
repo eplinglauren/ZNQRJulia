@@ -54,14 +54,22 @@ topEnv = Dict((Symbol(+)=>PrimV(Symbol(+))),
 
 function serialize(v::Value)
 	if typeof(v)==NumV
-		return string(v)
+		return string(getfield(v, :n))
 	elseif typeof(v)==StringV
-		return v
+		return string(getfield(v, :str))
 	elseif typeof(v)==BoolV
-		return string(v)
+		return string(getfield(v, :b))
 	elseif typeof(v)==PrimV
 		return "#<primop>"
 	else
 		return "#<procedure>"
 	end
+end
+
+using Test
+@testset "serialize" begin
+	@test serialize(NumV(2)) == "2"
+	@test serialize(StringV("hi")) == "hi"
+	@test serialize(BoolV(true)) == "true"
+	@test serialize(PrimV(Symbol(+))) == "#<primop>"
 end
