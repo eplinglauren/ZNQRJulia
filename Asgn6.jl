@@ -52,6 +52,8 @@ topEnv = Dict((Symbol(+)=>PrimV(Symbol(+))),
 (Symbol(true)=>BoolV(true)),
 (Symbol(false)=>BoolV(false)))
 
+# serialize accepts a value and returns
+# the serialized (string) version of the value
 function serialize(v::Value)
 	if typeof(v)==NumV
 		return string(getfield(v, :n))
@@ -66,6 +68,7 @@ function serialize(v::Value)
 	end
 end
 
+# Test Cases
 using Test
 @testset "serialize" begin
 	@test serialize(NumV(2)) == "2"
