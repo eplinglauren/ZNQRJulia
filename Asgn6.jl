@@ -18,11 +18,10 @@ struct LamC <: ExprC
 	body::ExprC
 end
 
-# environment type
-# abstract type Env <: Dict{Symbol,Value} end
-
 # type definitions for Values
 abstract type Value end
+# environment type
+const Env = Dict{Symbol,Value}
 struct NumV <: Value
 	n::Real
 end
@@ -38,7 +37,7 @@ end
 struct CloV <: Value
 	arg::Array{Symbol,1}
 	body::ExprC
-	# env::Env
+	env::Env
 end
 
 # top environment
@@ -123,7 +122,7 @@ end
 @testset "prim_add" begin
 	@test prim_add(NumV(2), NumV(1)) == 3
 	@test prim_add(NumV(10), NumV(20)) == 30
-	@test_throws ErrorException prim_add(BoolV(true), NumV(2))
+	@test_throws MethodError prim_add(BoolV(true), NumV(2))
 end
 
 @testset "prim_sub" begin
