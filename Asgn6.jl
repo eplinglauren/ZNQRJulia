@@ -148,8 +148,21 @@ function prim_equal(a::Value,b::Value)
 			else
 				return BoolV(false)
 			end
-		end	
+		end
 	end
+end
+
+#Return the value stored for the given key, or the given default value if no mapping for the key is present.
+function interp(program::ExprC)
+	if typeof(program) == NumC
+	    return NumV(program.n)
+	elseif typeof(program) == StringC
+		return StringV(program.str)
+	elseif typeof(program) == IdC
+		return get(topEnv, program.op, 0)
+	elseif typeof(program) == LamC
+		return CloV(program.arg, body, topEnv)
+    end
 end
 
 # Test Cases
@@ -197,4 +210,11 @@ end
 	@test prim_equal(BoolV(false), BoolV(false)) == BoolV(true)
 	@test prim_equal(StringV("hey"), StringV("hey")) == BoolV(true)
 	@test prim_equal(StringV("hello"), StringV("hi")) == BoolV(false)
+end
+
+@testset "interp" begin
+	@test interp(NumC(2)) == NumV(2)
+	@test interp(StringC("hello")) == StringV("hello")
+	@test interp(IdC(Symbol(false))) == BoolV(false)
+	#@test interp([:fe,:fi,:fo, :fum], NumC(2)) == CloV(false)
 end
